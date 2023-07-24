@@ -1,0 +1,7 @@
+backtrader==1.9.78.123
+ibapi==10.19.1
+IbPy2 @ git+https://github.com/blampe/IbPy.git@cba912d2ecc669b0bf2980357ea7942e49c0825e
+oandapyV20==0.7.2
+pandas==2.0.2
+requests==2.31.0
+yfinance==0.2.26
