@@ -1,7 +1,7 @@
 import backtrader as bt
-from indicators import ZeroLagEMAIndicator
+from ajmal.indicators import ZeroLagEMAIndicator
 
-from query_api import get_yfinance_data as get_yf_data
+from ajmal.query_api import get_yfinance_data as get_yf_data
 
 class ZeroLagStrategy(bt.Strategy):
 	params = (
