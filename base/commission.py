@@ -6,6 +6,13 @@ class CustomCommission(bt.CommissionInfo):
         ("forex", 0.002),
     )
 
+    def getsize(self, price, cash):
+        """
+        Returns fractional size for operation.
+        """
+        return self.p.leverage * (cash / price)
+
+    
     def getcommission(self, size, price, pseudoexec):
         if isinstance(pseudoexec, bt.CashOperation):
             if pseudoexec.data.sec_type == bt.SecType.Stock:
