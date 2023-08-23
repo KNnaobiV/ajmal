@@ -209,7 +209,86 @@ class BaseStrategy(bt.Strategy):
     def start(self):
         self.first_timepoint = True
 
+    def check_dividend(self):
+        if self.invest_div and self.datadiv:
+            self.broker.add_cash(self.datadiv)
+            
+    def log_initial_cash_addition(self):
+        if self.transaction_logging:
+            self.log(f'Start date: {start_date.strftime("%Y-%m-%d")}')
+            self.log(f'Next cash date: {self.next_cash_datetime.strftime("%Y-%m-%d")}')
+
+    def log_cash_addition(self):
+        if self.transaction_logging:
+            self.log(f'Cash added: {self.add_cash_amount}')
+            self.log(f'Total cash added: {self.total_cash_added}')
+            self.log(f'Next cash date: {self.next_cash_datetime.strftime("%Y-%m-%d")}')
+
+    def initialize_cash_addition(self):
+        start_date = self.datas[0].datetime.datetime(0)
+        self.cron = croniter.croniter(self.add_cash_freq, start_date)
+        self.next_cash_datetime = self.cron.get_next(datetime.datetime)
+        self.log_initial_cash_addition()
+
+    def is_cash_addition_due(self):
+        return
+
+    def add_cash_to_broker(self):
+        self.broker.add_cash(self.add_cash_amount)
+        self.next_cash_datetime = self.cron.get_next(datetime.datetime)
+        self.total_cash_added += self.add_cash_amount
+
+
+    def log_periodic_close(self):
+        if self.periodic_logging:
+            self.log(f'Close, {self.dataclose[0]:.2f}')
+
+
+    def log_current_position_size(self):
+        if self.periodic_logging:
+            self.log(f"CURRENT POSITION SIZE {self.periodic.size}")
+
+    def is_data_complete(self):
+        return len(self) + 1 >= self.len_data
+
+    def should_buy(self):
+        return self.buy_signal() and self.strategy_position in [0, -1, None]
+
+    def should_self(self):
+        return self.sell_signal() and self.strategy_position in [1, -1, None]
+
+    def should_take_profit(self):
+        self.take_profit_signal()
+
+    def should_exit_long(self):
+        return self.exit_long_signal()
+
+    def should_exit_short(self):
+        return self.exit_short_signal()
+
+    def execute_buy(self):
+        pass
+
+    def execute_sell(self):
+        pass
+
+    def execute_take_profit(self):
+        pass
+
+    def execute_exit_long(self):
+        pass
+
+    def execute_exit_short(self):
+        pass
+
+
+    def new_next(self):
+        self.check_dividend()
+        
+
     def next(self):
+        self.check_dividend()
+
         if self.invest_div and self.datadiv is not None:
             self.broker.add_cash(self.datadiv)
         
@@ -386,6 +465,7 @@ class BaseStrategy(bt.Strategy):
         else:
             self.action = 'neutral'
 
+    
 
 class RSIStrategy(BaseStrategy):
     params=('rsi_period',14),('rsi_upper',70),('rsi_lower',30)
