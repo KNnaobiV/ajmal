@@ -1,6 +1,6 @@
-# Backtrader Trading Strategy/Optimization Project
+l# Backtrader Trading Strategy/Optimization Project
 
-This project contains a Backtrader trading strategy/optimization for [add description of your strategy or optimization].
+This project contains a Backtrader trading strategy/optimization for backtesting.
 
 ## Getting Started
 
